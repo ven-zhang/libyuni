@@ -48,6 +48,13 @@ if(YUNI_MODULE_CORE)
 	include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/core.cmake")
 endif()
 
+#
+# Module : regex
+#
+if(YUNI_MODULE_REGEX)
+	include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/regex.cmake")
+endif()
+
 if(YUNI_MODULE_VM)
 	include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/vm.cmake")
 endif()

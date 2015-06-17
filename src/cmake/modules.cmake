@@ -5,6 +5,7 @@
 if (WIN32 OR WIN64)
 	# NSIS does not support semicolons.....
 	set(YUNICOMPONENT_CORE              "yuni_core")
+	set(YUNICOMPONENT_REGEX             "yuni_regex")
 	set(YUNICOMPONENT_ALGORITHMS        "yuni_algorithms")
 	set(YUNICOMPONENT_MEDIA_CORE        "yuni_media_core")
 	set(YUNICOMPONENT_DEVICE_DISPLAY    "yuni_device_display")
@@ -16,6 +17,7 @@ if (WIN32 OR WIN64)
 	set(YUNICOMPONENT_PARSER            "yuni_parser")
 else()
 	set(YUNICOMPONENT_CORE              "yuni-core")
+	set(YUNICOMPONENT_REGEX             "yuni-regex")
 	set(YUNICOMPONENT_ALGORITHMS        "yuni-algorithms")
 	set(YUNICOMPONENT_MEDIA_CORE        "yuni-media-core")
 	set(YUNICOMPONENT_DEVICE_DISPLAY    "yuni-device-display")
@@ -77,6 +79,9 @@ set(YUNI_MODULE_UI                        false)
 # Algorithms
 set(YUNI_MODULE_ALGORITHMS                false)
 
+# Regex
+set(YUNI_MODULE_REGEX                     false)
+
 # UUID
 set(YUNI_MODULE_EXTRA_UUID                false)
 
@@ -100,6 +105,7 @@ set(YUNI_MODULE_LIST
 	algorithms
 	vm
 	marshal
+	regex
 	vfs
 		vfs-local
 	media
@@ -205,6 +211,17 @@ if (MODULES)
 		# -benchmarks
 		if ("${it}" STREQUAL "-benchmarks")
 			set(YUNI_BENCHMARKS false)
+			set(KeywordIsKnown true)
+		endif()
+
+		# regex
+		if ("${it}" STREQUAL "regex")
+			set(YUNI_MODULE_REGEX true)
+			set(KeywordIsKnown true)
+		endif()
+		# -regex
+		if ("${it}" STREQUAL "-regex")
+			set(YUNI_MODULE_REGEX false)
 			set(KeywordIsKnown true)
 		endif()
 
@@ -442,11 +459,12 @@ if (MODULES)
 		YMESSAGE("")
 		YMESSAGE("Errors on modules. Here is the list of all available modules :")
 		YMESSAGE("(+ : Enable the module,  - disable the module)")
-		YMESSAGE(" Main and virtual modules")
-		YMESSAGE("    +core          : The core module (needed)")
-		YMESSAGE("    -/+tests       : Atomic Tests for the yuni framework")
-		YMESSAGE("    +all           : Enable all main modules (ui,tests,...)")
-		YMESSAGE("    -/+docs        : Documentation Tools")
+		YMESSAGE(" Main")
+		YMESSAGE("    +core          : The core module (required)")
+		YMESSAGE("    -/+uuid        : UUID")
+		YMESSAGE("    -/+marshal     : The Marshal module (for Object serialization, default: disabled)")
+		YMESSAGE("    -/+algorithms  : Additional algorithms")
+		YMESSAGE("    -/+regex       : Regex support (via PCRE)")
 		#YMESSAGE(" The VFS module")
 		#YMESSAGE("    -/+vfs         : The Virtual filesystem")
 		#YMESSAGE("    -/+vfs-local   : Support for the local filesystems")
@@ -468,12 +486,13 @@ if (MODULES)
 		YMESSAGE("    -/+messaging   : The messaging module (default: disabled)")
 		YMESSAGE(" The DBI modules")
 		YMESSAGE("    -/+dbi         : The Database Indepedent module (default: disabled)")
-		YMESSAGE(" The extra modules")
-		YMESSAGE("    -/+uuid        : UUID (default: disabled)")
-		YMESSAGE("    -/+marshal     : The Marshal module (for Object serialization, default: disabled)")
-		YMESSAGE("    -/+algorithms  : Standard algorithms")
+		YMESSAGE(" Extra modules")
 		YMESSAGE("    -/+parser      : Parser Generator")
 		YMESSAGE("    -/+benchmarks  : Benchmarks")
+		YMESSAGE("    -/+tests       : Atomic Tests for the yuni framework")
+		YMESSAGE("    -/+docs        : Documentation Tools")
+		YNESSAGE(" Virtual modules")
+		YMESSAGE("    +all           : Enable all main modules (ui,tests,...)")
 		YMESSAGE("")
 		message(FATAL_ERROR "Errors on module names")
 	endif()
@@ -520,6 +539,10 @@ set(YUNI_MODULE_AVAILABLE "core")
 
 if (YUNI_MODULE_ALGORITHMS)
 	list(APPEND YUNI_MODULE_AVAILABLE algorithms)
+endif()
+
+if (YUNI_MODULE_REGEX)
+	list(APPEND YUNI_MODULE_AVAILABLE regex)
 endif()
 
 if (YUNI_MODULE_DBI)
